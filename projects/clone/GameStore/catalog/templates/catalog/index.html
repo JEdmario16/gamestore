@@ -1,0 +1,139 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}
+
+Game Store | Catalog
+
+{% endblock %}
+
+{% block heading %}
+<link rel="stylesheet" href="{{url_for('catalog.static', filename='catalog/css/custom.css')}}">
+{% endblock %}
+
+
+<!-- Body starts here -->
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="page-content">
+        <!-- ***** Banner Start ***** -->
+        <div class="main-banner">
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="header-text">
+                <h6>Welcome To Cyborg</h6>
+                <h4><em>Browse</em> Our Popular Games Here</h4>
+                <div class="main-button">
+                  <a href="browse.html">Browse Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ***** Banner End ***** -->
+
+        <!-- ***** Most Popular Start ***** -->
+        <div class="most-popular">
+          <div class="row">
+
+            <div class="col-lg-12">
+              <div class="heading-section">
+                <h4><em>Most Popular</em> Right Now</h4>
+              </div>
+              <div class="row">
+                {% for game in home_games %}
+
+                <div class="col-lg-3 col-sm-6">
+                  <div class="item">
+                    <img class="product-thumb" src="{{game['images']['thumb_image']}}" alt="">
+                    <!-- TODO Exibir todas as tags, atualmente, apeans uma é exibida -->
+                    <a href="{{url_for('catalog.details', game_id=game.game_id)}}">
+                      <h4>{{game.name}}<br><span>{{game.tags[0]}}</span></h4>
+                    </a>
+                    <ul>
+                      <li><i class="fa fa-star"></i>{{game['reviews']['stars']}}</li>
+                      <li><i class="fa fa-download"></i>{{game['downloads']}}</li>
+                      <li><i class="fa-solid fa-dollar-sign"></i>{{game["pricing"]}}</li>
+                    </ul>
+                  </div>
+                </div>
+                {% endfor %}
+
+                <div class="col-lg-12">
+                  <div class="main-button">
+                    <a href="browse.html">Discover Popular</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ***** Most Popular End ***** -->
+
+        <!-- ***** Gaming Library Start ***** -->
+        <div class="gaming-library">
+          <div class="col-lg-12">
+            <div class="heading-section">
+              <h4><em>Your Gaming</em> Library</h4>
+            </div>
+            {% if current_user.is_authenticated %}
+            {% for game_index in range(games_count) %}
+
+            <div class="item">
+              <ul>
+                <li>
+                  <img src="{{user_games[game_index]['images']['thumb_image']}}" alt="" class="templatemo-item" />
+                </li>
+                <li>
+                  <a href="{{url_for('catalog.details', game_id=user_games[game_index]['game_id'])}}">
+                    <h4>{{user_games[game_index]['name']}}</h4>
+                    <span>{{user_games[game_index]['tags'][0]}}</span>
+                  </a>
+                </li>
+                <li>
+                  <h4>Date Added</h4>
+                  <span>{{current_user.my_games[game_index].added_at}}</span>
+                </li>
+                <li>
+                  <h4>Currently</h4>
+                  <span>Downloaded</span>
+                </li>
+                <li>
+                  {% if current_user.my_games[game_index].is_downloaded %}
+                  <div class="main-border-button border-no-active">
+                    <a href="#">Donwloaded</a>
+                  </div>
+                  {% else %}
+                  <div class="main-border-button">
+                    <a href="#">Donwload</a>
+                  </div>
+                  {% endif %}
+                </li>
+              </ul>
+            </div>
+
+            {% endfor %}
+
+            <div class="col-lg-12">
+              <div class="main-button">
+                <a href="{{url_for('auth.profile')}}">View Your Library</a>
+              </div>
+            </div>
+
+            {% else %}
+            <ul>
+              <li>
+                <h4><em id="login-link"><a href="{{url_for('auth.login')}}">Sign in</a></em> to see your library</h4>
+              </li>
+            </ul>
+            {% endif %}
+
+          </div>
+        </div>
+        <!-- ***** Gaming Library End ***** -->
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
